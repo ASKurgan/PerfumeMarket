@@ -1,0 +1,181 @@
+﻿<div class="row">
+    <div class="col">
+        <select class="form-control" id="firstPerfumeId"></select>
+    </div>
+    <div class="col">
+        <select class="form-control" id="secondPerfumeId"></select>
+    </div>
+</div>
+
+<div style="padding: 10px;"></div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-body">
+            <h5 class="card-title" id="firstCardTitleId"></h5>
+            <p class="card-text" id="firstCardDescId"></p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" id="firstCardFragranceOfGroupId"></li>
+            <li class="list-group-item" id="firstCardPriceId"></li>
+            <li class="list-group-item" id="firstCardBrandId"></li>
+            <li class="list-group-item" id="firstCardDateCreateId"></li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <div class="card-body">
+            <h5 class="card-title" id="secondCardTitleId"></h5>
+            <p class="card-text" id="secondCardDescId"></p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" id="secondCardFragranceOfGroupId"></li>
+            <li class="list-group-item" id="secondCardPriceId"></li>
+            <li class="list-group-item" id="secondCardBrandlId"></li>
+            <li class="list-group-item" id="secondCardDateCreateId"></li>
+        </ul>
+    </div>
+</div>
+
+<div style="padding: 10px;"></div>
+
+<div class="text-white bg-secondary" id="warningCardId">
+    <div class="bg-secondary card-header text-white">
+        Предупреждение
+    </div>
+    <div class="card-body">
+        <blockquote class="blockquote mb-0">
+            <p id="warningId"></p>
+        </blockquote>
+    </div>
+</div>
+
+<div style="padding: 10px;"></div>
+
+<div id="resultCardId">
+    <div class="bg-secondary card-header text-white">
+        Результат
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" id="resultFragranceOfGroupId"></li>
+            <li class="list-group-item" id="resultPriceId"></li>
+        </ul>
+    </div>
+</div>
+
+<script src="~/lib/select2/js/select2.full.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#firstCardId').hide();
+        $('#secondCardId').hide();
+        $('#warningCardId').hide();
+        $('#resultCardId').hide();
+
+        let firstCar = null;
+        let secondCar = null;
+
+        $('#firstPerfumeId, #secondPerfumeId').select2({
+            placeholder: "Выберите аромат",
+            minimumInputLength: 2,
+            allowClear: true,
+            ajax: {
+                type: "POST",
+                url: "@Url.Action("GetPerfume", "Perfume")",
+                dataType: "json",
+                data: function (params) {
+                    var query = {
+                        term: params.term,
+                        page: params.page || 1,
+                        pageSize: params.pageSize || 5
+                    };
+                    return query;
+                },
+                processResults: function (result) {
+                    return {
+                        results: $.map(result, function (val, index) {
+                            return {
+                                id: index,
+                                text: val
+                            };
+                        }),
+                    };
+                }
+            }
+        });
+        function fillData(val, cardId) {
+            if (cardId === 'firstCardId') {
+                $('#firstCardId').show();
+                $('#firstCardTitleId')[0].innerText = 'Название: ' + val.name;
+                $('#firstCardDescId')[0].innerText = 'Описание: ' + val.description;
+                $('#firstCardFragranceOfGroupId')[0].innerText = 'Группа ароматов: ' + val.fragranceOfGroup + ' ';
+                $('#firstCardPriceId')[0].innerText = 'Стоимость: ' + val.price + ' ₽';
+                $('#firstCardBrandId')[0].innerText = 'Бренд: ' + val.brand;
+                $('#firstCardDateCreateId')[0].innerText = 'Дата создания: ' + val.dateCreate;
+            } else {
+                $('#secondCarId').show();
+                $('#secondCardTitleId')[0].innerText = 'Название: ' + val.name;
+                $('#secondCardDescId')[0].innerText = 'Описание: ' + val.description;
+                $('#secondCardFragranceOfGroupId')[0].innerText = 'Группа ароматов: ' + val.fragranceOfGroup + ' км/ч';
+                $('#secondCardPriceId')[0].innerText = 'Стоимость: ' + val.price + ' ₽';
+                $('#secondCardBrandId')[0].innerText = 'Бренд: ' + val.brand;
+                $('#secondCardDateCreateId')[0].innerText = 'Дата создания: ' + val.dateCreate;
+            }
+            comparePerfumes();
+        }
+
+
+        $("#secondPerfumeId").on("change", function () {
+            const id = this.value;
+            if (id === "") return;
+            $.get("/Perfume/GetPerfume", { id: id, isJson: true }, function (data) {
+                secondPerfume = data;
+                fillData(secondPerfume, "secondPerfumeId");
+            });
+        });
+
+        $("#firstPerfumeId").on("change", function () {
+            const id = this.value;
+            if (id === "") return;
+            $.get("/Perfume/GetPerfume", { id: id, isJson: true }, function (data) {
+                firstCar = data;
+                fillData(firstPerfume, "firstPerfumeId");
+            });
+        });
+
+        function comparePerfumes() {
+            if (firstPerfume === null) {
+                $('#warningId')[0].innerText = 'Вы не выбрали первый аромат';
+                $('#warningCardId').show();
+                return;
+            }
+
+            if (secondPerfume === null) {
+                $('#warningId')[0].innerText = 'Вы не выбрали второй аромат';
+                $('#warningCardId').show();
+                return;
+            }
+
+            // var fragranceOfGroup = $('#resultFragranceOfGroupId')[0];
+            // if (firstPerfume.fragranceOfGroup > secondPerfume.fragranceOfGroup) {
+            //     fragranceOfGroup.innerText = 'Группа ароматов' + firstPerfume.name + ' выше, чем у ' + secondPerfume.name;
+            // } else if (firstCar.speed === secondCar.speed) {
+            //     speed.innerText = 'Скорость ' + secondCar.name + ' и ' + firstCar.name + ' равны';
+            // } else {
+            //     speed.innerText = 'Скорость ' + secondCar.name + ' выше, чем у ' + firstCar.name;
+            // }
+
+            var price = $('#resultPriceId')[0];
+            if (firstPerfume.price > secondPerfume.price) {
+                price.innerText = 'Стоимость ' + firstPerfume.name + ' выше, чем у ' + secondPerfume.name;
+            } else if (firstPerfume.price === secondPerfume.price) {
+                price.innerText = 'Стоимость ' + firstPerfume.name + ' и ' + secondPerfume.name + ' равны';
+            } else {
+                price.innerText = 'Стоимость ' + firstPerfume.name + ' выше, чем у ' + secondPerfume.name;
+            }
+            $('#resultCardId').show();
+            $('#warningCardId').hide();
+        }
+    });
+</script>
+

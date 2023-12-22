@@ -1,8 +1,163 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<div style="padding: 10px;"></div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="card col-md-12">
+        <div class="card-body">
+            <h5 class="card-title text-center">Добро пожаловать на сайт PerfumeMarket</h5>
+            <p class="card-text">
+                На этом сайте вы сможете выбрать подходящий для Вас аромат, посмотреть его характеристики, сравнить
+                с другими ароматами, а так же можете приобрести этот аромат
+            </p>
+            <p class="card-text"><small class="text-muted">Запах</small></p>
+        </div>
+    </div>
+
+    <div style="padding: 10px;"></div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://wallpaperscraft.ru/wallpaper/duhi_flakon_buket_208731" class="card-img-top card-image" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Lalique</h5>
+                        <p class="card-text">Lalique — торговая марка и одноимённая компания — производитель хрусталя премиального класса, люстр, а также ароматов класса люкс</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a asp-controller="Perfume" asp-action="GetPerfumes" class="card-link">Список ароматов</a>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://wallpaperscraft.ru/wallpaper/tsvety_buket_bumaga_912053" class="card-img-top card-image" />
+                <div class="card-body text-center">
+                    <h5 class="card-title">Ex Nihillo</h5>
+                    <p class="card-text">
+                        Ex Nihillo — французский производитель ароматов нишевой категории
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Perfume" asp-action="GetPerfumes" class="card-link">Список ароматов</a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://wallpaperscraft.ru/wallpaper/gitara_kolki_makro_389713" class="card-img-top card-image" />
+                <div class="card-body text-center">
+                    <h5 class="card-title">Nasomato</h5>
+                    <p class="card-text">Nasomato — итальянский бренд, производящий ароматы нишевой категории </p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-controller="Perfume" asp-action="GetPerfumes" class="card-link">Список ароматов</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 10px;"></div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Основные виды ароматов</h5>
+            <p class="card-text">
+                Вид аромата можно классифицировать по многим категориям измерения. Они могут быть флористические или цветочные,
+                цитрусовые или геспериды, древесные или шипровые, восточные, фруктовые, пряные, древесные, фужерные, океанические,
+                свежие или озоновые, цитрусовые, акватические и тд.
+            </p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+        </div>
+    </div>
+
+    <div style="padding: 10px;"></div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Наибольшим спросом пользуются ароматы следующих видов</h5>
+        </div>
+        <ul class="list-group list-group-flush" id="ulListId">
+            <li class="list-group-item">Аватические, свежие — самый распространенный вариант</li>
+            <li class="list-group-item">Пряные или ориентальные — для утонченных центителей, в основном на прохладное время года</li>
+            <li class="list-group-item">Флористические или цветочные — основное время года - осень, весна</li>
+            <li class="list-group-item">Цитрусовые или геспериды — универсальны в плане полного отсутствия возрастных ограничений</li>
+            <li class="list-group-item">Фужерные — отличаются особой обширностью наполнения возможными вариациями </li>
+            <li class="list-group-item">Фруктовые - относятся к классической летней категории, выражаемой стилистикой «кэжуал»</li>
+            <li class="list-group-item">Шипровые - универсальные. Насыщенные акценты мха вкупе с утонченными цветочными или цитрусовыми мотивами</li>
+            <li class="list-group-item">Древесные — потрясающие лесные композиции, в основном на холодное время года</li>
+        </ul>
+        <div class="card-body">
+            <button class="btn btn-danger" id="btnHideId">Скрыть</button>
+            <button class="btn btn-primary" id="btnShowId">Показать</button>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            Вы не авторизовались
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>Для просмотра контента вы должны авторизоваться</p>
+            </blockquote>
+        </div>
+    </div>
+
+    <div style="padding: 10px;"></div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://wallpaperscraft.ru/wallpaper/duhi_flakon_buket_208731" class="card-img-top" alt="Lalique Aroma">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Недоступно</h5>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Lalique Aroma</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://wallpaperscraft.ru/wallpaper/astrantsiia_tsvetok_konvert_1015522" class="card-img-top" alt="Ex Nihillo Fleur Narcotic">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Недоступно</h5>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Ex Nihillo Fleur Narcotic</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://wallpaperscraft.ru/wallpaper/duhi_flakon_kartina_207695" class="card-img-top" alt="Schannel Aroma">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Недоступно</h5>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Schannel Aroma</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section pageScripts
+{
+    <script>
+
+        $('#btnHideId').click(function () {
+            $('#ulListId').hide(2000);
+        });
+
+        $('#btnShowId').click(function () {
+            $('#ulListId').show(2000);
+        });
+    </script>
+}
